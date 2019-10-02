@@ -1,3 +1,7 @@
 FROM nginx
 
-COPY . /usr/share/nginx/html
+WORKDIR /usr/share/nginx/html
+COPY . .
+
+ENTRYPOINT [ "bash", "docker-entrypoint.sh" ]
+CMD [ "nginx", "-g", "daemon off;" ]
