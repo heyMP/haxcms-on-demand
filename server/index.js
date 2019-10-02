@@ -88,8 +88,8 @@ async function main() {
       }
     },
     context: ({ req }) => ({
-      // user: getUserFromAuthHeader(req)
-      user: { name: "heyMP" }
+      user: getUserFromAuthHeader(req)
+      // user: { name: "heyMP" }
     })
   });
 

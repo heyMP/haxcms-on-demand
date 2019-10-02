@@ -37,7 +37,7 @@ class HodContainerList extends MobxLitElement {
         a:disabled {
           cursor: default;
           background: rgba(0, 0, 0, 0.8);
-        }        }
+        } 
       </style>
       ${this.store.containers.map(container =>
         html`

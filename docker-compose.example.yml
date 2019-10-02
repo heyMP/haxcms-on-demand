@@ -16,10 +16,13 @@ services:
     labels:
       - "traefik.enable=true" # Enable reverse-proxy for this service
       - "traefik.frontend.rule=Host:demo.haxcms.localhost"
-      # - "traefik.frontend.auth.forward.address=http://auth.haxcms.localhost/auth"
-      # - traefik.frontend.auth.forward.authResponseHeaders=X-Forwarded-User
-      # - traefik.frontend.auth.forward.trustForwardHeader=true
+      - "traefik.frontend.auth.forward.address=http://auth.haxcms.localhost/auth"
+      - traefik.frontend.auth.forward.authResponseHeaders=X-Forwarded-User
+      - traefik.frontend.auth.forward.trustForwardHeader=true
       - "traefik.port=80"
+    environment:
+      - HAXCMS_ON_DEMAND_FQDN=http://hod.haxcms.localhost
+      - HAXCMS_AUTH_FQDN=http://auth.haxcms.localhost
 
   server:
     build: .
@@ -53,13 +56,3 @@ services:
     labels:
       - "traefik.enable=true" # Enable reverse-proxy for this service
       - "traefik.port=5432"
-
-  cod:
-    image: heymp/containers-on-demand
-    labels:
-      - "traefik.frontend.rule=Host:cod.haxcms.localhost"
-      - "traefik.port=3000"
-    command: 'npm start'
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock # connect docker to the host machine docker thread
-      - /usr/local/bin/docker:/usr/bin/docker # give the container access to docker

@@ -17,7 +17,7 @@ class HodAuth extends MobxLitElement {
   async getAccessToken() {
     try {
       const access_token = await fetch(
-        "http://auth.haxcms.localhost/access_token",
+        `${window._env_.HAXCMS_AUTH_FQDN}/access_token`,
         {
           credentials: "include"
         }
@@ -33,7 +33,7 @@ class HodAuth extends MobxLitElement {
   async getUser() {
     if (typeof window.localStorage.access_token !== "undefined") {
       const access_token = window.localStorage.access_token;
-      const user = await fetch("http://auth.haxcms.localhost/graphql", {
+      const user = await fetch(`${window._env_.HAXCMS_AUTH_FQDN}/graphql`, {
         method: "POST",
         headers: {
           Accept: "application/json",

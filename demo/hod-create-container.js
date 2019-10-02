@@ -69,7 +69,7 @@ class HodCreateContainer extends MobxLitElement {
     try {
       const access_token = window.localStorage.getItem("access_token");
       this.store.createContainerState = "initializing"
-      const server = await fetch('http://hod.haxcms.localhost/graphql', {
+      const server = await fetch(`${window._env_.HAXCMS_ON_DEMAND_FQDN}/graphql`, {
         method: "POST",
         headers: {
           Accept: "application/json",
