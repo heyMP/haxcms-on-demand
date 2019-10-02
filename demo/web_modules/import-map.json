@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "@adobe/lit-mobx": "./@adobe/lit-mobx.js",
+    "lit-element": "./lit-element.js",
+    "mobx": "./mobx.js"
+  }
+}
