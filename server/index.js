@@ -11,6 +11,7 @@ const cp = require("child_process");
 
 const HAXCMS_OAUTH_JWT_SECRET = process.env.HAXCMS_OAUTH_JWT_SECRET;
 const NETWORK = process.env.NETWORK;
+const HOST = process.env.HOST;
 
 async function main() {
   await photon.connect();
@@ -20,10 +21,13 @@ async function main() {
     try {
       if (typeof req.headers.authorization !== "undefined") {
         const access_token = req.headers.authorization.split(" ")[1];
+        console.log(access_token)
         const user = jwt.verify(access_token, HAXCMS_OAUTH_JWT_SECRET);
+        console.log(user)
         return user;
       }
     } catch (error) {
+      console.log(error)
       return null;
     }
   };
@@ -61,6 +65,7 @@ async function main() {
         createServer: Server
         deleteServer(containerId: String): Server
         deleteMyServers: BatchDeleteResponse
+        deleteAllServers: BatchDeleteResponse
       }
     `,
     resolvers: {
@@ -70,8 +75,9 @@ async function main() {
       },
       Mutation: {
         createServer: async (parent, args, ctx) => {
-          const url = `${ctx.user.name}.haxcms.localhost`;
-          const containerId = createServer(url);
+          const url = `${ctx.user.name}.${HOST}`;
+          const containerId = createServer({ url, name: ctx.user.name });
+          console.log(ctx.user.name)
           const server = await photon.servers.create({
             data: {
               user: ctx.user.name,
@@ -83,12 +89,14 @@ async function main() {
         },
         deleteServer: async (parent, { containerId }, ctx) =>
           await photon.servers.delete({ where: { containerId } }),
-        deleteMyServers: async (parent, args, ctx) => 
-          await photon.servers.deleteMany({ where: { user: ctx.user.name } })
+        deleteMyServers: async (parent, args, ctx) =>
+          await photon.servers.deleteMany({ where: { user: ctx.user.name } }),
+        deleteAllServers: async (parent, args, ctx) =>
+          await photon.servers.deleteMany()
       }
     },
-    context: ({ req }) => ({
-      user: getUserFromAuthHeader(req)
+    context: async ({ req }) => ({
+      user: await getUserFromAuthHeader(req)
       // user: { name: "heyMP" }
     })
   });
@@ -102,26 +110,31 @@ async function main() {
   });
 }
 
-const createServer = url => {
-  const cpStartContainer = cp.spawnSync("docker", [
-    "run",
-    "-d",
+const createServer = ({ name, url }) => {
+  const command = [
+    "service",
+    "create",
+    "--name",
+    name,
     "--network",
     NETWORK,
-    "-p",
-    "80",
     "--label",
     `traefik.enable=true`,
     "--label",
     `traefik.frontend.rule=Host:${url}`,
     "--label",
-    `traefik.docker.network=${NETWORK}`,
+    `traefik.port=80`,
+    "--label",
+    `traefik.tags=${NETWORK}`,
     "elmsln/haxcms"
-  ]);
+  ]
+  console.log(command);
+  const cpStartContainer = cp.spawnSync("docker", command);
   const output = cpStartContainer.output.toString();
+  console.log(output)
   // console.log(output)
   // get the new container id from output
-  const newContainerId = /([a-zA-Z0-9]{64})/g.exec(output)[0];
+  const newContainerId = /([a-zA-Z0-9]{25})/g.exec(output)[0];
   return newContainerId;
 };
 

@@ -21,7 +21,7 @@ class Store {
   async getContainers() {
     try {
       const access_token = window.localStorage.getItem("access_token");
-      const containers = await fetch('http://hod.haxcms.localhost/graphql', {
+      const containers = await fetch(`${window._env_.HAXCMS_ON_DEMAND_FQDN}/graphql`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -34,8 +34,6 @@ class Store {
             "query": "query { myServers { user containerId url }}" \
           }'
       }).then(res => res.json())
-      console.log(containers)
-      // this.containers = [... containers]
       this.containers = containers.data.myServers
     } catch (error) {
     }
