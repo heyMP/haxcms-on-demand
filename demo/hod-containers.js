@@ -27,9 +27,11 @@ class HodContainers extends MobxLitElement {
         ? html`
           <hod-container-list></hod-container-list>
         `
-        : html`
-          <hod-create-container></hod-create-container>
-        `
+        : this.store.containers.length === 0
+          ? html`
+            <hod-create-container></hod-create-container>
+          `
+        : ''
       }
     `;
   }

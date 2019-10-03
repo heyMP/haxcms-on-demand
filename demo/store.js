@@ -14,7 +14,7 @@ class Store {
     this.accessToken = null
     this.createContainerState = 'default'
     this.createContainerMessage = null
-    this.containers = []
+    this.containers = null
     this.getContainers()
   }
 
@@ -42,7 +42,7 @@ class Store {
 
 decorate(Store, {
   name: observable,
-  accessToken: observable,
+  accessToke: observable,
   createContainerState: observable,
   createContainerStateMessage: observable,
   containers: observable,

@@ -6,7 +6,7 @@ const { Photon } = require("@generated/photon");
 const fetch = require("node-fetch");
 const photon = new Photon();
 const jwt = require("jsonwebtoken");
-const { ApolloServer, gql } = require("apollo-server-express");
+const { ApolloServer, gql, AuthenticationError } = require("apollo-server-express");
 const cp = require("child_process");
 
 const HAXCMS_OAUTH_JWT_SECRET = process.env.HAXCMS_OAUTH_JWT_SECRET;
@@ -21,13 +21,11 @@ async function main() {
     try {
       if (typeof req.headers.authorization !== "undefined") {
         const access_token = req.headers.authorization.split(" ")[1];
-        console.log(access_token)
         const user = jwt.verify(access_token, HAXCMS_OAUTH_JWT_SECRET);
-        console.log(user)
         return user;
       }
     } catch (error) {
-      console.log(error)
+      throw new AuthenticationError(error);
       return null;
     }
   };
