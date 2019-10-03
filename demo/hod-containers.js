@@ -1,8 +1,9 @@
-import { html } from "../../web_modules/lit-element.js";
-import { MobxLitElement } from "../../web_modules/@adobe/lit-mobx.js";
+import { html } from "./web_modules/lit-element.js";
+import { MobxLitElement } from "./web_modules/@adobe/lit-mobx.js";
 import { store } from "./store.js";
-import './hod-create-container.js'
-import './hod-container-list.js'
+import "./hod-create-container.js";
+import "./hod-container-list.js";
+import "./hod-toolbar.js";
 
 class HodContainers extends MobxLitElement {
   constructor() {
@@ -11,7 +12,8 @@ class HodContainers extends MobxLitElement {
   }
 
   connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
+    this.store.getContainers()
   }
 
   render() {
@@ -23,18 +25,21 @@ class HodContainers extends MobxLitElement {
           justify-content: center;
         }
       </style>
-      ${this.store.containers.length > 0
-        ? html`
-          <hod-container-list></hod-container-list>
-        `
-        : this.store.containers.length === 0
+
+      <hod-toolbar></hod-toolbar>
+
+      ${this.store.containers
+        ? this.store.containers.length > 0
           ? html`
-            <hod-create-container></hod-create-container>
-          `
-        : ''
-      }
+              <hod-container-list></hod-container-list>
+            `
+          : this.store.containers.length === 0
+          ? html`
+              <hod-create-container></hod-create-container>
+            `
+          : ""
+        : ""}
     `;
   }
 }
 customElements.define("hod-containers", HodContainers);
-

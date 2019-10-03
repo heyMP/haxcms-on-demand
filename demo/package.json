@@ -12,6 +12,8 @@
   "dependencies": {
     "@adobe/lit-mobx": "^0.0.2",
     "lit-element": "^2.2.1",
-    "mobx": "^5.13.1"
+    "mobx": "^5.13.1",
+    "apollo-boost": "^0.4.4",
+    "graphql": "^14.5.8"
   }
 }

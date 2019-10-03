@@ -6,7 +6,10 @@ import {
   action,
   toJS,
   runInAction
-} from "../../web_modules/mobx.js";
+} from "./web_modules/mobx.js";
+
+import ApolloClient from './web_modules/apollo-boost.js';
+import { gql } from './web_modules/apollo-boost.js';
 
 class Store {
   constructor() {
@@ -15,37 +18,51 @@ class Store {
     this.createContainerState = 'default'
     this.createContainerMessage = null
     this.containers = null
-    this.getContainers()
+  }
+
+  get hodClient() {
+    return new ApolloClient({
+      uri: `${window._env_.HAXCMS_ON_DEMAND_FQDN}/graphql`,
+      headers: {
+        Authorization: `Bearer ${window.localStorage.getItem('access_token')}`
+      }
+    });
+  }
+
+  get authClient() {
+    return new ApolloClient({
+      uri: `${window._env_.HAXCMS_AUTH_FQDN}/graphql`,
+      headers: {
+        Authorization: `Bearer ${window.localStorage.getItem('access_token')}`
+      }
+    });
   }
 
   async getContainers() {
-    try {
-      const access_token = window.localStorage.getItem("access_token");
-      const containers = await fetch(`${window._env_.HAXCMS_ON_DEMAND_FQDN}/graphql`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`
-        },
-        body:
-          ' \
-          { \
-            "query": "query { myServers { user containerId url }}" \
-          }'
-      }).then(res => res.json())
+      const containers = await this.hodClient.query({
+        query: gql`
+          query {
+            myServers {
+              user
+              containerId
+              url
+            }
+          }
+        `
+      })
       this.containers = containers.data.myServers
-    } catch (error) {
-    }
   }
 }
 
 decorate(Store, {
   name: observable,
-  accessToke: observable,
+  accessToken: observable,
+  refreshToken: action.bound,
   createContainerState: observable,
   createContainerStateMessage: observable,
   containers: observable,
+  hodClient: computed,
+  authClient: computed,
   getContainers: action.bound
 });
 

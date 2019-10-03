@@ -1,18 +1,18 @@
 import { LitElement, html } from "../../web_modules/lit-element.js";
 import { MobxLitElement } from "../../web_modules/@adobe/lit-mobx.js";
-import { store } from "./store.js"
+import { store } from "./store.js";
 import "../../web_modules/@lrnwebcomponents/hax-logo.js";
 
 class HodToolbar extends MobxLitElement {
   constructor() {
     super();
-    this.store = store
+    this.store = store;
   }
 
   connectedCallback() {
-    super.connectedCallback()
+    super.connectedCallback();
   }
-  
+
   render() {
     return html`
       <style>
@@ -43,8 +43,8 @@ class HodToolbar extends MobxLitElement {
           width: 100%;
           padding: 2em 0;
           text-align: center;
-          font-size: .3em;
-          font-family: 'Press Start 2P', cursive;
+          font-size: 0.3em;
+          font-family: "Press Start 2P", cursive;
         }
         img {
           width: 100%;
@@ -53,11 +53,16 @@ class HodToolbar extends MobxLitElement {
       <div id="logo">
         <hax-logo></hax-logo>
       </div>
-      <div id="image">
-        <img src="https://github.com/${this.store.name}.png">
-        <div id="name">${this.store.name}</div>
-      </div>
-    `
+
+      ${this.store.name
+        ? html`
+            <div id="image">
+              <img src="https://github.com/${this.store.name}.png" />
+              <div id="name">${this.store.name}</div>
+            </div>
+          `
+        : ""}
+    `;
   }
 }
 customElements.define("hod-toolbar", HodToolbar);

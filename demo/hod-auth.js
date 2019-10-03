@@ -1,6 +1,7 @@
-import { html } from "../../web_modules/lit-element.js";
-import { MobxLitElement } from "../../web_modules/@adobe/lit-mobx.js";
+import { html } from "./web_modules/lit-element.js";
+import { MobxLitElement } from "./web_modules/@adobe/lit-mobx.js";
 import { store } from "./store.js";
+import { gql } from "./web_modules/apollo-boost.js";
 
 class HodAuth extends MobxLitElement {
   constructor() {
@@ -21,24 +22,24 @@ class HodAuth extends MobxLitElement {
         {
           credentials: "include"
         }
-      );
-      if (access_token.status === 200) {
-        window.localStorage.setItem("access_token", await access_token.json());
-        this.store
-        return await access_token.json();
+      ).then(res => res.json());
+      if (access_token) {
+        window.localStorage.setItem("access_token", access_token);
+        return access_token;
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async getUser() {
     if (typeof window.localStorage.access_token !== "undefined") {
-      const access_token = window.localStorage.access_token;
       const user = await fetch(`${window._env_.HAXCMS_AUTH_FQDN}/graphql`, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`
+          Authorization: `Bearer ${window.localStorage.getItem('access_token')}`
         },
         body:
           ' \

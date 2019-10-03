@@ -17,6 +17,17 @@ async function main() {
   await photon.connect();
   const app = express();
 
+  app.use(cors());
+  app.use(bodyParser.json());
+
+  /**
+   * Allow calls from web components with cookies
+   */
+  app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", req.headers.origin);
+    next();
+  });
+
   const getUserFromAuthHeader = async req => {
     try {
       if (typeof req.headers.authorization !== "undefined") {
@@ -30,16 +41,6 @@ async function main() {
     }
   };
 
-  app.use(cors());
-  app.use(bodyParser.json());
-
-  /**
-   * Allow calls from web components with cookies
-   */
-  app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", req.headers.origin);
-    next();
-  });
 
   const apolloServer = new ApolloServer({
     typeDefs: gql`
@@ -68,14 +69,15 @@ async function main() {
     `,
     resolvers: {
       Query: {
-        myServers: async (parent, args, ctx) =>
-          await photon.servers.findMany({ where: { user: ctx.user.name } })
+        myServers: async (parent, args, ctx) => {
+          console.log(ctx.user)
+          return await photon.servers.findMany({ where: { user: ctx.user.name } })
+        }
       },
       Mutation: {
         createServer: async (parent, args, ctx) => {
           const url = `${ctx.user.name}.${HOST}`;
           const containerId = createServer({ url, name: ctx.user.name });
-          console.log(ctx.user.name)
           const server = await photon.servers.create({
             data: {
               user: ctx.user.name,
@@ -126,7 +128,6 @@ const createServer = ({ name, url }) => {
     `traefik.tags=${NETWORK}`,
     "elmsln/haxcms"
   ]
-  console.log(command);
   const cpStartContainer = cp.spawnSync("docker", command);
   const output = cpStartContainer.output.toString();
   console.log(output)

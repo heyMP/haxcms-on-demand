@@ -10,7 +10,6 @@ class HodContainerList extends MobxLitElement {
 
   connectedCallback() {
     super.connectedCallback()
-    this.store.getContainers()
   }
 
   render() {
