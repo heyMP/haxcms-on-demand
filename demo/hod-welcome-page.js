@@ -2,35 +2,24 @@ import { LitElement, html } from "../../web_modules/lit-element.js";
 import { MobxLitElement } from "../../web_modules/@adobe/lit-mobx.js";
 import { store } from "./store.js";
 
-class HodContainerList extends MobxLitElement {
+class HodWelcomePage extends MobxLitElement {
   constructor() {
     super();
     this.store = store;
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-  }
-
   render() {
     return html`
       <style>
-        :host {
-          display: block;
-          flex-direction: column;
-          justify-content: center;
-          max-width: 30rem;
-          margin: auto;
-        }
         @import url("https://fonts.googleapis.com/css?family=Roboto+Mono:400,700&display=swap");
         @import url("https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap");
 
-        body {
-          font-family: "Roboto Mono", Consolas, Monospace;
-          height: 100%;
-          display: grid;
-          margin: 8px;
+        :host {
+          display: block;
+          max-width: 30rem;
+          margin: auto;
         }
+
         hr {
           border: 8px solid #000;
           display: block;
@@ -54,9 +43,6 @@ class HodContainerList extends MobxLitElement {
         .container-2 {
           margin: auto;
           margin-bottom: 4rem;
-        }
-        .align-v {
-          height: 100vh;
         }
         #image {
           display: block;
@@ -96,17 +82,16 @@ class HodContainerList extends MobxLitElement {
           text-transform: uppercase;
           text-decoration: none;
           text-align: center;
+          color: ;
         }
 
         a.button img {
           margin-right: 12px;
         }
-        a.button:focus,
         a.button:hover {
           text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
           transition: text-shadow 0.1s ease-in 0s;
         }
-        a.button:focus,
         a.button:hover {
           text-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
           transition: text-shadow 0.1s ease-in 0s;
@@ -120,25 +105,18 @@ class HodContainerList extends MobxLitElement {
           transition: box-shadow 0.1s ease-in 0s, background 0.3s ease-in 0s;
           color: black;
         }
-        .button:focus,
         .button:hover {
           box-shadow: 16px 16px #000000;
           transition: box-shadow 0.1s ease-out 0s, background 0.3s ease-in 0s;
         }
-        .button.btn-bg-purple:focus,
         .button.btn-bg-purple:hover {
           background: #fc03ec;
-          color: white;
         }
-        .button.btn-bg-blue:focus,
         .button.btn-bg-blue:hover {
           background: #0099ff;
-          color: white;
         }
-        .button.btn-bg-green:focus,
         .button.btn-bg-green:hover {
           background: #00ff00;
-          color: white;
         }
 
         .drag-box {
@@ -169,23 +147,27 @@ class HodContainerList extends MobxLitElement {
           height: 320px;
           background-color: #eee;
         }
+
+        /* Animation */
       </style>
-      ${this.store.containers.map(
-        container =>
-          html`
-            <div class="container-2">
-              <div class="drop-box padding-3 bg-1">
-                <a
-                  href="${window.location.protocol}//${container.url}"
-                  class="button btn-bg-green center"
-                  target="_blank"
-                  >${container.url}</a
-                >
-              </div>
-            </div>
-          `
-      )}
+      <div class="container-1">
+        <div class="align-v">
+          <p>
+            Hello there. This demo was created specially for
+            <strong>2019.HAX.CAMP</strong> attendees. To create a personal HAX
+            CMS instance, sign in with your Github account.
+          </p>
+          <a href="#" @click=${this.store.login} class="button btn-bg-purple center"
+            ><img
+              class="btn-img"
+              height="32"
+              width="32"
+              src="https://unpkg.com/simple-icons@latest/icons/github.svg"
+            />
+            Sign in with Github</a>
+        </div>
+      </div>
     `;
   }
 }
-customElements.define("hod-container-list", HodContainerList);
+customElements.define("hod-welcome-page", HodWelcomePage);

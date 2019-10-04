@@ -1,2 +1,1 @@
-import './hod-auth.js'
-import './hod-containers.js'
+import './hod-router.js'

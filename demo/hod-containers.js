@@ -1,4 +1,5 @@
 import { html } from "./web_modules/lit-element.js";
+import { autorun } from "./web_modules/mobx.js";
 import { MobxLitElement } from "./web_modules/@adobe/lit-mobx.js";
 import { store } from "./store.js";
 import "./hod-create-container.js";
@@ -14,9 +15,15 @@ class HodContainers extends MobxLitElement {
   connectedCallback() {
     super.connectedCallback();
     this.store.getContainers()
+    autorun(() => {
+      if (this.store.accessToken) {
+        this.store.getContainers()
+      }
+    })
   }
 
   render() {
+    // watch for change
     return html`
       <style>
         :host {
@@ -27,6 +34,8 @@ class HodContainers extends MobxLitElement {
       </style>
 
       <hod-toolbar></hod-toolbar>
+
+      ${this.store.containers.length}
 
       ${this.store.containers
         ? this.store.containers.length > 0
