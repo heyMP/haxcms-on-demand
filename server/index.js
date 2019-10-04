@@ -87,12 +87,29 @@ async function main() {
           });
           return server;
         },
-        deleteServer: async (parent, { containerId }, ctx) =>
-          await photon.servers.delete({ where: { containerId } }),
-        deleteMyServers: async (parent, args, ctx) =>
-          await photon.servers.deleteMany({ where: { user: ctx.user.name } }),
-        deleteAllServers: async (parent, args, ctx) =>
-          await photon.servers.deleteMany()
+
+        deleteServer: async (parent, { containerId }, ctx) => {
+          if (ctx.user.name !== 'heyMP') {
+            throw new AuthenticationError(`Permission Denied`)
+          }
+          deleteServer({ containerId })
+          return await photon.servers.delete({ where: { containerId } })
+        },
+
+        deleteMyServers: async (parent, args, ctx) => {
+          return await photon.servers.deleteMany({ where: { user: ctx.user.name } })
+        },
+
+        deleteAllServers: async (parent, args, ctx) => {
+          if (ctx.user.name !== 'heyMP') {
+            throw new AuthenticationError(`Permission Denied`)
+          }
+          const servers = await photon.servers.findMany()
+          servers.forEach(async server => {
+            deleteServer(server)
+          })
+          return await photon.servers.deleteMany()
+        }
       }
     },
     context: async ({ req }) => ({
@@ -136,6 +153,17 @@ const createServer = ({ name, url }) => {
   const newContainerId = /([a-zA-Z0-9]{25})/g.exec(output)[0];
   return newContainerId;
 };
+
+const deleteServer = ({ containerId }) => {
+  const command = [
+    "service",
+    "rm",
+    containerId
+  ]
+  const cpDeleteContainer = cp.spawnSync("docker", command)
+  console.log(cpDeleteContainer.output.toString())
+  return
+}
 
 main()
   .catch(e => {

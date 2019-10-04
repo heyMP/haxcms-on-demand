@@ -8,21 +8,21 @@ import {
   runInAction
 } from "./web_modules/mobx.js";
 
-import ApolloClient from './web_modules/apollo-boost.js';
-import { gql } from './web_modules/apollo-boost.js';
+import ApolloClient from "./web_modules/apollo-boost.js";
+import { gql } from "./web_modules/apollo-boost.js";
 
 class Store {
   constructor() {
     this.name = null;
-    this.accessToken = null
-    this.createContainerState = 'default'
-    this.createContainerMessage = null
-    this.containers = null
+    this.accessToken = null;
+    this.createContainerState = "default";
+    this.createContainerMessage = null;
+    this.containers = null;
 
     // Check if they already have a token
-    if (window.localStorage.getItem('access_token')) {
-      this.accessToken = window.localStorage.getItem('access_token')
-      this.getUser()
+    if (window.localStorage.getItem("access_token")) {
+      this.accessToken = window.localStorage.getItem("access_token");
+      this.getUser();
     }
   }
 
@@ -60,14 +60,14 @@ class Store {
             }
           }
         `
-      })
-      this.containers = containers.data.myServers
+      });
+      this.containers = containers.data.myServers;
     }
   }
 
   async login() {
-    await this.getAccessToken()
-    await this.getUser()
+    await this.getAccessToken();
+    await this.getUser();
   }
 
   async getAccessToken() {
@@ -79,12 +79,11 @@ class Store {
         }
       ).then(res => res.json());
       if (access_token) {
-        this.accessToken = access_token
-        window.localStorage.setItem('access_token', access_token)
+        this.accessToken = access_token;
+        window.localStorage.setItem("access_token", access_token);
         return access_token;
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   async getUser() {
@@ -102,7 +101,43 @@ class Store {
         }'
     }).then(res => res.json());
     this.name = user.data.user.name;
+  }
+
+  async createContainerInit() {
+    try {
+      this.createContainerState = "initializing";
+      const server = await this.hodClient.mutate({mutation: gql`
+        mutation {
+          createServer {
+            containerId
+            createdAt
+            id
+            user
+          }
+        }
+      `
+      })
+      if (server.errors) {
+        this.createContainerState = "error";
+        if (
+          server.errors.find(i =>
+            i.message.includes("Unique constraint failed: Server.url")
+          )
+        ) {
+          this.createContainerMessage = "You already have a server, yo!";
+        } else {
+          this.createContainerMessage = "Something went kinda wrong :(";
+        }
+      } else {
+        this.createContainerState = "complete";
+      }
+    } catch (error) {
+      this.createContainerState = "error";
+      this.createContainerMessage = "Something went so wrong :(";
     }
+    // auto update containers
+    this.getContainers();
+  }
 }
 
 decorate(Store, {
@@ -114,10 +149,11 @@ decorate(Store, {
   containers: observable,
   hodClient: computed,
   authClient: computed,
+  createContainerInit: action.bound,
   getContainers: action.bound,
   login: action.bound,
   getAccessToken: action.bound,
   getUser: action.bound
 });
 
-export const store = new Store()
+export const store = new Store();

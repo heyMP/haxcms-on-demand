@@ -1,11 +1,8 @@
 import { LitElement, html } from "../../web_modules/lit-element.js";
 import { MobxLitElement } from "../../web_modules/@adobe/lit-mobx.js";
 import { store } from "./store.js";
-import "./hod-user-image.js";
-import "./hod-container-list.js";
-import "./hod-container-init.js";
 
-class HodUserPage extends MobxLitElement {
+class HodContainerInit extends MobxLitElement {
   constructor() {
     super();
     this.store = store;
@@ -13,7 +10,6 @@ class HodUserPage extends MobxLitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this.store.getContainers();
   }
 
   render() {
@@ -174,36 +170,12 @@ class HodUserPage extends MobxLitElement {
           background-color: #eee;
         }
       </style>
-      <hod-user-image></hod-user-image>
-
-      ${this.store.containers
-        ? this.store.containers.length === 0
-          ? html`
-              <p>
-                Welcome <span class="black">${this.store.name}</span>, let's
-                build something. By carefully clicking the button below, you'll
-                set in motion a series of automated events that will culminate
-                in the creation a personal HAX CMS instance.
-              </p>
-              <a href="#" @click=${this.store.createContainerInit} class="button btn-bg-blue center"
-                >Generate Instance</a>
-              <hod-container-init></hod-container-init>
-            `
-          : this.store.containers.length > 0
-          ? html`
-              <p>
-                Nice work, you just got a lot of work done in a short amount of
-                time. Your instance is now ready. Keep in mind, this is only a
-                proof of concept.<span class="red">
-                  You will be shown a password ONLY ONCE, make sure to copy it
-                  somewhere so that you can log in again later on.</span
-                >
-              </p>
-              <hod-container-list></hod-container-list>
-            `
-          : ""
-        : ""}
+            <div class="container-2">
+              <div class="drop-box padding-3 bg-1">
+                ${this.store.createContainerMessage}
+              </div>
+            </div>
     `;
   }
 }
-customElements.define("hod-user-page", HodUserPage);
+customElements.define("hod-container-init", HodContainerInit);

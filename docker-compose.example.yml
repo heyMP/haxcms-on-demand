@@ -10,19 +10,17 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock # So that Traefik can listen to the Docker events
   
   app:
-    image: nginx
+    build:
+      context: ./demo
     volumes:
-      - ./demo:/usr/share/nginx/html:ro
+      - ./demo:/usr/share/nginx/html
     labels:
       - "traefik.enable=true" # Enable reverse-proxy for this service
       - "traefik.frontend.rule=Host:demo.haxcms.localhost"
-      - "traefik.frontend.auth.forward.address=http://auth.haxcms.localhost/auth"
-      - traefik.frontend.auth.forward.authResponseHeaders=X-Forwarded-User
-      - traefik.frontend.auth.forward.trustForwardHeader=true
       - "traefik.port=80"
     environment:
-      - HAXCMS_ON_DEMAND_FQDN=http://hod.haxcms.localhost
-      - HAXCMS_AUTH_FQDN=http://auth.haxcms.localhost
+      - HAXCMS_ON_DEMAND_FQDN=http://hod.2019.hax.camp
+      - HAXCMS_AUTH_FQDN=http://auth.2019.hax.camp
 
   server:
     build: .
@@ -39,8 +37,8 @@ services:
     environment:
       - PRISMA_DB_PROVIDER=postgresql
       - PRISMA_DB_URL=postgresql://prisma:prisma@postgres/
-      - HAXCMS_OAUTH_JWT_SECRET=2b8d19251a7c4c43a5610fac3e5993a1
-      - FQDN=http://auth.haxcms.localhost
+      - HAXCMS_OAUTH_JWT_SECRET=1598559ab3894f59bde1f42638c4cf9e
+      - FQDN=http://hod.haxcms.localhost
       - NETWORK=haxcms-on-demand_default
     depends_on:
       - postgres
