@@ -12,6 +12,7 @@ const cp = require("child_process");
 const HAXCMS_OAUTH_JWT_SECRET = process.env.HAXCMS_OAUTH_JWT_SECRET;
 const NETWORK = process.env.NETWORK;
 const HOST = process.env.HOST;
+const ADMINS = process.env.ADMINS || "heyMP";
 
 async function main() {
   await photon.connect();
@@ -71,7 +72,7 @@ async function main() {
     resolvers: {
       Query: {
         servers: async (parent, args, ctx) => {
-          if (ctx.user.name !== 'heyMP') {
+          if (!isAdmin({ user: ctx.user.name })) {
             throw new AuthenticationError(`Permission Denied`)
           }
           return await photon.servers.findMany()
@@ -95,7 +96,7 @@ async function main() {
         },
 
         deleteServer: async (parent, { containerId }, ctx) => {
-          if (ctx.user.name !== 'heyMP') {
+          if (!isAdmin({ user: ctx.user.name })) {
             throw new AuthenticationError(`Permission Denied`)
           }
           deleteServer({ containerId })
@@ -111,7 +112,7 @@ async function main() {
         },
 
         deleteAllServers: async (parent, args, ctx) => {
-          if (ctx.user.name !== 'heyMP') {
+          if (!isAdmin({ user: ctx.user.name })) {
             throw new AuthenticationError(`Permission Denied`)
           }
           const servers = await photon.servers.findMany()
@@ -194,6 +195,11 @@ const deleteServer = ({ containerId }) => {
   const cpDeleteContainer = cp.spawnSync("docker", command)
   console.log(cpDeleteContainer.output.toString())
   return
+}
+
+const isAdmin = ({ user }) => {
+  const array = ADMINS.split(',').map(i => i.trim())
+  return array.includes(user)
 }
 
 main()
