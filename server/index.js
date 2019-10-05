@@ -146,14 +146,31 @@ const createServer = ({ name, url }) => {
     name,
     "--network",
     NETWORK,
+
     "--label",
     `traefik.enable=true`,
+
     "--label",
     `traefik.frontend.rule=Host:${url}`,
+
     "--label",
     `traefik.port=80`,
+
     "--label",
     `traefik.tags=${NETWORK}`,
+
+    "--label",
+    `traefik.docker.network=${NETWORK}`,
+
+    "--label",
+    "traefik.servicehttp.frontend.entryPoints=http",
+
+    "--label",
+    "traefik.servicehttp.frontend.redirect.entryPoint=https",
+
+    "--label",
+    "traefik.servicehttps.frontend.entryPoints=https",
+
     "elmsln/haxcms"
   ]
   const cpStartContainer = cp.spawnSync("docker", command);
