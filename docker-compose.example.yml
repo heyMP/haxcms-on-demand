@@ -40,6 +40,7 @@ services:
       - HAXCMS_OAUTH_JWT_SECRET=1598559ab3894f59bde1f42638c4cf9e
       - FQDN=http://hod.haxcms.localhost
       - NETWORK=haxcms-on-demand_default
+      - ADMINS=heyMP,btopro
     depends_on:
       - postgres
 

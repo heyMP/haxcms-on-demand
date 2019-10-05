@@ -83,7 +83,10 @@ class Store {
         window.localStorage.setItem("access_token", access_token);
         return access_token;
       }
-    } catch (error) {}
+    } catch (error) {
+      // We need to redirect the user back to the auth service
+      window.location.href = `${window._env_.HAXCMS_AUTH_FQDN}/login?redirect=${window.location.href}`
+    }
   }
 
   async getUser() {
