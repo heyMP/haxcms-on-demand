@@ -19,8 +19,15 @@ class Store {
     this.createContainerMessage = null;
     this.containers = null;
 
+    // if we are in the process of logging, meaning we have a new refresh_token
+    if (getUrlParameter('login') === "true") {
+      window.location.replace(window.location.origin)
+      // remove the existing access_token if we have one
+      window.localStorage.removeItem("access_token");
+      this.login()
+    }
     // Check if they already have a token
-    if (window.localStorage.getItem("access_token")) {
+    else if (window.localStorage.getItem("access_token")) {
       this.accessToken = window.localStorage.getItem("access_token");
       this.getUser();
     }
@@ -85,7 +92,7 @@ class Store {
       }
     } catch (error) {
       // We need to redirect the user back to the auth service
-      window.location.href = `${window._env_.HAXCMS_AUTH_FQDN}/login?redirect=${window.location.href}`
+      window.location.href = `${window._env_.HAXCMS_AUTH_FQDN}/login?redirect=${window.location.href}?login`
     }
   }
 
@@ -158,5 +165,12 @@ decorate(Store, {
   getAccessToken: action.bound,
   getUser: action.bound
 });
+
+const getUrlParameter = (name) => {
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+  var results = regex.exec(location.search);
+  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+};
 
 export const store = new Store();
