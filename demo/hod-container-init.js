@@ -169,12 +169,16 @@ class HodContainerInit extends MobxLitElement {
           height: 320px;
           background-color: #eee;
         }
+        #state {
+          padding: 1rem;
+          background: white;
+        }
       </style>
-            <div class="container-2">
-              <div class="drop-box padding-3 bg-1">
-                ${this.store.createContainerMessage}
-              </div>
-            </div>
+      <div class="container-2">
+        <div class="drop-box padding-3 bg-1">
+          <div id="state">${this.store.createContainerState}</div>
+        </div>
+      </div>
     `;
   }
 }

@@ -185,9 +185,18 @@ class HodUserPage extends MobxLitElement {
                 set in motion a series of automated events that will culminate
                 in the creation a personal HAX CMS instance.
               </p>
-              <a href="#" @click=${this.store.createContainerInit} class="button btn-bg-blue center"
-                >Generate Instance</a>
-              <hod-container-init></hod-container-init>
+              ${this.store.createContainerState === "initializing"
+                ? html`
+                    <hod-container-init></hod-container-init>
+                  `
+                : html`
+                    <a
+                      href="#"
+                      @click=${this.store.createContainerInit}
+                      class="button btn-bg-blue center"
+                      >Generate Instance</a
+                    >
+                  `}
             `
           : this.store.containers.length > 0
           ? html`
