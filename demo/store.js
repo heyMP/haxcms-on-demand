@@ -140,7 +140,10 @@ class Store {
           this.createContainerMessage = "Something went kinda wrong :(";
         }
       } else {
-        this.createContainerState = "complete";
+        // Temp solution to make sure it's fully set up
+        setTimeout(() => {
+          this.createContainerState = "complete";
+        }, 5000)
       }
     } catch (error) {
       this.createContainerState = "error";
