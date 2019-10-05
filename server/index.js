@@ -147,6 +147,9 @@ const createServer = ({ name, url }) => {
     "--network",
     NETWORK,
 
+    "--mount",
+    `type=volume,source=${url},target=/var/www/html/_sites`,
+
     "--label",
     `traefik.enable=true`,
 
