@@ -92,7 +92,7 @@ class Store {
       }
     } catch (error) {
       // We need to redirect the user back to the auth service
-      window.location.href = `${window._env_.HAXCMS_AUTH_FQDN}/login?redirect=${window.location.origin}?login`
+      window.location.href = `${window._env_.HAXCMS_AUTH_FQDN}/login?redirect=${window.location.origin}?login=true`
     }
   }
 
