@@ -59,6 +59,7 @@ async function main() {
 
       type Query {
         myServers: [Server]
+        servers: [Server]
       }
       type Mutation {
         createServer: Server
@@ -69,8 +70,13 @@ async function main() {
     `,
     resolvers: {
       Query: {
+        servers: async (parent, args, ctx) => {
+          if (ctx.user.name !== 'heyMP') {
+            throw new AuthenticationError(`Permission Denied`)
+          }
+          return await photon.servers.findMany()
+        },
         myServers: async (parent, args, ctx) => {
-          console.log(ctx.user)
           return await photon.servers.findMany({ where: { user: ctx.user.name } })
         }
       },
@@ -97,6 +103,10 @@ async function main() {
         },
 
         deleteMyServers: async (parent, args, ctx) => {
+          const servers = await photon.servers.findMany({ where: { user: ctx.user.name } })
+          servers.forEach(async server => {
+            deleteServer(server)
+          })
           return await photon.servers.deleteMany({ where: { user: ctx.user.name } })
         },
 
@@ -110,6 +120,7 @@ async function main() {
           })
           return await photon.servers.deleteMany()
         }
+
       }
     },
     context: async ({ req }) => ({
