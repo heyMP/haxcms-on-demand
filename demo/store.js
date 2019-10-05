@@ -21,7 +21,8 @@ class Store {
 
     // if we are in the process of logging, meaning we have a new refresh_token
     if (getUrlParameter('login') === "true") {
-      window.location.replace(window.location.origin)
+      // remove query parameters
+      window.history.pushState({},"", window.location.origin);
       // remove the existing access_token if we have one
       window.localStorage.removeItem("access_token");
       this.login()
