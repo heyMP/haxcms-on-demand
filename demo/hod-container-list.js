@@ -216,7 +216,10 @@ class HodContainerList extends MobxLitElement {
   _deleteContainer(e) {
     const id = e.target.dataset.id
     // just dlete all your servers for now
-    this.store.deleteMyContainers();
+    var r = confirm("Are you sure you want to delete this instance? THIS CAN NOT BE UNDONE!");
+    if (r == true) {
+      this.store.deleteMyContainers();
+    }
   }
 }
 customElements.define("hod-container-list", HodContainerList);
