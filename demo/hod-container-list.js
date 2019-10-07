@@ -54,6 +54,16 @@ class HodContainerList extends MobxLitElement {
         .container-2 {
           margin: auto;
           margin-bottom: 4rem;
+          position: relative;
+        }
+        .delete {
+          padding: 1rem;
+          background: white;
+          color: black;
+          position: absolute;
+          right: 0;
+          left: 0;
+          z-index: 10;
         }
         .align-v {
           height: 100vh;
@@ -181,7 +191,7 @@ class HodContainerList extends MobxLitElement {
                   target="_blank"
                   >${container.url}</a
                 >
-                <a class="delete" @click=${this._deleteContainer} data-id=${container.containerId}>Delete</a>
+                <a class="delete" @click=${this._deleteContainer} data-id=${container.containerId} alt="Delete container">X</a>
               </div>
             </div>
           `
@@ -190,7 +200,7 @@ class HodContainerList extends MobxLitElement {
   }
 
   _deleteContainer(e) {
-    console.log(e.target.data.id);
+    console.log(e.target);
   }
 }
 customElements.define("hod-container-list", HodContainerList);
