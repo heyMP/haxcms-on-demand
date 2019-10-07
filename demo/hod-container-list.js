@@ -58,7 +58,7 @@ class HodContainerList extends MobxLitElement {
         }
         .delete {
           padding: 1rem;
-          background: white;
+          background-color: white;
           color: black;
           position: absolute;
           right: -1rem;
@@ -67,11 +67,12 @@ class HodContainerList extends MobxLitElement {
           display: inline-block;
           width: auto;
           display: none;
-          transition: all .3 ease-in-out;
+          transition: all .8 ease-in-out;
+          cursor: pointer;
         }
         .delete:hover,
         .delete:focus {
-          background: red;
+          background-color: red;
           color: white;
         }
         .container-2:hover .delete,
