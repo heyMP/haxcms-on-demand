@@ -175,7 +175,7 @@ const createServer = ({ name, url }) => {
     "--label",
     "traefik.servicehttps.frontend.entryPoints=https",
 
-    "elmsln/haxcms"
+    "haxcms-on-demand:latest"
   ]
   const cpStartContainer = cp.spawnSync("docker", command);
   const output = cpStartContainer.output.toString();
