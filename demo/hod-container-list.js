@@ -71,7 +71,8 @@ class HodContainerList extends MobxLitElement {
         }
         .delete:hover,
         .delete:focus {
-          transform: translateY(-1rem);
+          background: red;
+          color: white;
         }
         .container-2:hover .delete,
         .container-2:focus .delete {
