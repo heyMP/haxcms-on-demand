@@ -61,9 +61,21 @@ class HodContainerList extends MobxLitElement {
           background: white;
           color: black;
           position: absolute;
-          right: 0;
-          left: 0;
+          right: -1rem;
+          top: -1rem;
           z-index: 10;
+          display: inline-block;
+          width: auto;
+          display: none;
+          transition: all .3 ease-in-out;
+        }
+        .delete:hover,
+        .delete:focus {
+          transform: translateY(-1rem);
+        }
+        .container-2:hover .delete,
+        .container-2:focus .delete {
+          display: inline-block;
         }
         .align-v {
           height: 100vh;
