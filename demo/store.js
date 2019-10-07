@@ -152,6 +152,20 @@ class Store {
     // auto update containers
     this.getContainers();
   }
+
+  async deleteMyContainers() {
+    try {
+      const server = await this.hodClient.mutate({mutation: gql`
+        mutation {
+          deleteMyServers {
+            count
+          }
+        }
+      `
+      })
+    } catch(error) { }
+    this.getContainers();
+  }
 }
 
 decorate(Store, {
@@ -167,7 +181,8 @@ decorate(Store, {
   getContainers: action.bound,
   login: action.bound,
   getAccessToken: action.bound,
-  getUser: action.bound
+  getUser: action.bound,
+  deleteMyContainers: action.bound
 });
 
 const getUrlParameter = (name) => {

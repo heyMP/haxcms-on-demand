@@ -67,7 +67,7 @@ class HodContainerList extends MobxLitElement {
           display: inline-block;
           width: auto;
           display: none;
-          transition: all .8 ease-in-out;
+          transition: all .8s ease-in-out;
           cursor: pointer;
         }
         .delete:hover,
@@ -214,7 +214,9 @@ class HodContainerList extends MobxLitElement {
   }
 
   _deleteContainer(e) {
-    console.log(e.target);
+    const id = e.target.dataset.id
+    // just dlete all your servers for now
+    this.store.deleteMyContainers();
   }
 }
 customElements.define("hod-container-list", HodContainerList);
