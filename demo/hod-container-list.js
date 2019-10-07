@@ -181,11 +181,16 @@ class HodContainerList extends MobxLitElement {
                   target="_blank"
                   >${container.url}</a
                 >
+                <a class="delete" @click=${this._deleteContainer} data-id=${container.containerId}>Delete</a>
               </div>
             </div>
           `
       )}
     `;
+  }
+
+  _deleteContainer(e) {
+    console.log(e.target.data.id);
   }
 }
 customElements.define("hod-container-list", HodContainerList);
